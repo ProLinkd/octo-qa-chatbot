@@ -12,8 +12,9 @@ class Settings(BaseSettings):
     )
 
     APP_NAME: str = "octo_qa_chatbot"
-    VERSION: str = "1.0.0"
-    DEBUG: bool = False
+    VERSION: str = "1.1.0"
+    DEBUG: bool = True
+    
     STATIC_API_TOKEN: str = Field(
         "", validation_alias=AliasChoices("auth-token", "AUTH_TOKEN", "STATIC_API_TOKEN")
     )
