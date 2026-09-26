@@ -1,0 +1,9 @@
+fastapi==0.115.0
+gunicorn==22.0.0
+uvicorn==0.30.0
+pydantic==2.13.5
+pydantic-settings==2.3.4
+openai==2.5.0
+httpx==0.26.0
+json5==0.9.25
+redis==5.2.0
