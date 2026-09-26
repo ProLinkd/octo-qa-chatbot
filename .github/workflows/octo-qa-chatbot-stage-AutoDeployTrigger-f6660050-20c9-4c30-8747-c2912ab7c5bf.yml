@@ -1,0 +1,49 @@
+name: Trigger auto deployment for octo-qa-chatbot-stage
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ stage ]
+    paths:
+    - '**'
+    - '.github/workflows/octo-qa-chatbot-stage-AutoDeployTrigger-f6660050-20c9-4c30-8747-c2912ab7c5bf.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+      contents: read #Required when GH token is used to authenticate with private repo
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.OCTOQACHATBOTSTAGE_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.OCTOQACHATBOTSTAGE_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.OCTOQACHATBOTSTAGE_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}
+          _dockerfilePathKey_: _dockerfilePath_
+          _targetLabelKey_: _targetLabel_
+          registryUrl: pouria.azurecr.io
+          registryUsername: ${{ secrets.OCTOQACHATBOTSTAGE_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.OCTOQACHATBOTSTAGE_REGISTRY_PASSWORD }}
+          containerAppName: octo-qa-chatbot-stage
+          resourceGroup: octo-qa-chatbot-stage-rg
+          imageToBuild: pouria.azurecr.io/octo-qa-chatbot-stage:${{ github.sha }}
+          _buildArgumentsKey_: |
+            _buildArgumentsValues_
+
+
