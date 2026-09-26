@@ -6,4 +6,4 @@ RUN pip install --no-cache-dir -r requirements.txt \
 COPY --chown=app:app . .
 USER app
 EXPOSE 8501
-CMD ["sh", "exec.sh"]
+CMD ["bash", "exec.sh"]
