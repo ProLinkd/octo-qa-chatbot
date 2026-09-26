@@ -11,16 +11,14 @@ cd octo_qa_chatbot
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-export AUTH_TOKEN='change-me'
-export OPENAI_API_KEY='your-api-key'
-export REDIS_HOST='127.0.0.1'
-export REDIS_PORT='6379'
-DEBUG=true uvicorn app.main:app --host 0.0.0.0 --port 8501 --reload
+env 'auth-token=change-me' 'openai-api-token=your-api-key' \
+  'redis-host=127.0.0.1' 'redis-port=6379' DEBUG=true \
+  uvicorn app.main:app --host 0.0.0.0 --port 8501 --reload
 ```
 
 Use Python 3.10 or later. With `DEBUG=true`, interactive API docs are at
 http://localhost:8501/docs. The default model matches the reference project's
-`gpt-6-luna`; set `QA_OPENAI_MODEL` to a Responses-compatible model available
+`gpt-6-luna`; set `interview-assistant-openai-model` to a Responses-compatible model available
 to your account.
 
 ## Ask a question
@@ -44,7 +42,7 @@ curl http://localhost:8501/qa-sessions/SESSION_ID \
   -H 'Authorization: Token change-me'
 ```
 
-All routes except `GET /health-check` require `Authorization: Token <AUTH_TOKEN>`.
+All routes except `GET /health-check` require `Authorization: Token <auth-token>`.
 Keep this shared service token on your backend; do not embed it in a public browser app.
 
 | Endpoint | Purpose |
@@ -103,34 +101,36 @@ Malformed or missing handbook data causes startup to fail.
 
 ## Configuration
 
-Configure the service using environment variables. Standard uppercase
-environment variables are supported. `auth-token`, `openai-api-token`, and `qa-openai-model`
-are also accepted for compatibility with the reference service.
+Shared settings use `os.getenv` with the same environment keys as
+`interview-assistant`. Use `env 'key=value' command` locally for keys containing
+hyphens; Bash `export` does not accept those names. Q&A-specific settings keep
+the uppercase names listed below. Restart the service after changing environment
+variables.
 
 | Setting | Default |
 | --- | --- |
-| `AUTH_TOKEN` | Required for protected endpoints |
-| `OPENAI_API_KEY` | Required for model-backed answers |
-| `QA_OPENAI_MODEL` | `gpt-6-luna` |
+| `auth-token` | Required for protected endpoints |
+| `openai-api-token` | Required for model-backed answers |
+| `interview-assistant-openai-model` | `gpt-6-luna` |
 | `DEBUG` | `false` |
-| `OPENAI_TIMEOUT_SECONDS` | `300` |
+| `openai-timeout-seconds` | `300` |
 | `HANDBOOK_PATH` | Project's `howIvyWorksHandbook.ts` |
 | `RAG_TOP_K` | `6` |
 | `RAG_CHUNK_CHARS` | `2400` plus chapter/section heading |
-| `SESSION_TTL_SECONDS` | `864000` (10 days) |
+| `session-ttl-seconds` | `864000` (10 days) |
 | `MAX_SESSIONS` | `1000` (in-memory backend only) |
-| `REDIS_HOST` | Empty; set to enable Redis |
-| `REDIS_PORT` | `6379` |
-| `REDIS_DB` | `0` |
-| `REDIS_PASSWORD` | Empty |
-| `REDIS_SSL` | `false` |
+| `redis-host` | Empty; set to enable Redis |
+| `redis-port` | `6379` |
+| `redis-db` | `0` |
+| `redis-pass` | Empty |
+| `redis-ssl` | `false` |
 | `WEB_CONCURRENCY` | `1`; multiple workers supported with Redis |
 | `HISTORY_MAX_MESSAGES` | `20` recent messages sent to the model |
 | `MAX_OUTPUT_TOKENS` | `4096` |
 
-Set `REDIS_HOST` to save sessions and full chat history in Redis. The service also
-accepts the reference project's `redis-host`, `redis-port`, `redis-db`, `redis-pass`,
-`redis-ssl`, and `session-ttl-seconds` environment names.
+Set `redis-host` to save sessions and full chat history in Redis. Configure the
+connection with `redis-port`, `redis-db`, `redis-pass`, and `redis-ssl`; set
+`session-ttl-seconds` to control expiry.
 
 Each session is stored as JSON under `qa-session:{SESSION_ID}` (including the braces).
 It contains `session_id`, `created_at`, `expires_at`, and `messages`. Assistant
@@ -145,7 +145,7 @@ Redis database. For persistence across Redis restarts, configure Redis AOF or RD
 persistence and a persistent data volume. If configured Redis is unavailable, startup
 fails or requests return an error; the service does not silently switch to memory.
 
-Without `REDIS_HOST`, the service uses memory and loses sessions on restart. That
+Without `redis-host`, the service uses memory and loses sessions on restart. That
 mode requires one worker and one instance. With Redis, set `WEB_CONCURRENCY` when
 using `exec.sh` to run multiple workers.
 Authentication uses one shared token, so callers with that token and a session ID
@@ -155,12 +155,18 @@ can read that session. There is no per-user ownership layer.
 
 ```bash
 docker build -t octo_qa_chatbot .
-docker run --rm -p 8501:8501 -e AUTH_TOKEN -e OPENAI_API_KEY \
-  -e REDIS_HOST -e REDIS_PORT -e REDIS_DB -e REDIS_PASSWORD -e REDIS_SSL \
+docker run --rm -p 8501:8501 \
+  -e 'auth-token=change-me' \
+  -e 'openai-api-token=your-api-key' \
+  -e 'redis-host=your-redis-host' \
+  -e 'redis-port=6379' \
+  -e 'redis-db=0' \
+  -e 'redis-pass=your-redis-password' \
+  -e 'redis-ssl=false' \
   octo_qa_chatbot
 ```
 
-Use a `REDIS_HOST` reachable from the container; `127.0.0.1` refers to the container itself.
+Use a `redis-host` reachable from the container; `127.0.0.1` refers to the container itself.
 
 Gunicorn serves directly on port 8501. If adding a reverse proxy, disable response
 buffering and set a timeout long enough for streamed answers.
