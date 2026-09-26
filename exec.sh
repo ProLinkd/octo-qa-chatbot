@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -eu
 exec gunicorn app.main:app \
     -k uvicorn.workers.UvicornWorker \
