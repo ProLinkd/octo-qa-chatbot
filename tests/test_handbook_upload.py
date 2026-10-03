@@ -26,8 +26,15 @@ class HandbookUploadTests(unittest.TestCase):
         self.path = Path(self.directory.name) / 'howIvyWorksHandbook.ts'
         self.original = handbook('oldworkflow')
         self.path.write_bytes(self.original)
+        self.training_path = Path(self.directory.name) / 'trainingvideo.txt'
+        self.training_path.write_text(
+            'Video 1 link: https://example.com/training\nScript Video 1:\n'
+            'Chapter Guide\n1 chapters\nChapter 1\n\nCalendar setup\n'
+            'videoworkflow explains calendar availability.', encoding='utf-8',
+        )
         for key, value in {
             'HANDBOOK_PATH': self.path,
+            'TRAINING_VIDEO_PATH': self.training_path,
             'STATIC_API_TOKEN': 'test-token',
             'OPENAI_API_TOKEN': '',
             'REDIS_HOST': '',
@@ -51,7 +58,7 @@ class HandbookUploadTests(unittest.TestCase):
         response = self.upload(handbook('newworkflow'))
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(response.json(), {
-            'file': self.path.name, 'chapters': 1, 'sections': 1, 'chunks': 2,
+            'file': self.path.name, 'chapters': 1, 'sections': 1, 'chunks': 3,
         })
         self.assertEqual(self.client.get('/knowledge-base').json(), response.json())
         for term, expected in [('newworkflow', True), ('oldworkflow', False), ('hiddeninternalword', False)]:
@@ -111,13 +118,64 @@ class HandbookUploadTests(unittest.TestCase):
             self.assertEqual(self.upload(handbook('newworkflow')).status_code, 503)
         self.assertEqual(self.path.read_bytes(), self.original)
         self.assertTrue(app.state.handbook.get_index().search('oldworkflow'))
-        self.assertEqual(list(self.path.parent.iterdir()), [self.path])
+        self.assertEqual(set(self.path.parent.iterdir()), {self.path, self.training_path})
+
+    def test_training_video_reaches_chat_and_survives_handbook_upload(self):
+        session_id = self.client.post('/qa-sessions').json()['session_id']
+        for update in (False, True):
+            if update:
+                self.assertEqual(self.upload(handbook('newworkflow')).status_code, 200)
+            results = self.client.get('/knowledge-base/search', params={
+                'query': 'videoworkflow',
+            }).json()['results']
+            self.assertEqual(len(results), 1)
+            self.assertEqual(results[0]['file'], 'trainingvideo.txt')
+            self.assertEqual(results[0]['source_id'], 'training-video-1/chapter-1:1')
+            self.assertIn('https://example.com/training', results[0]['text'])
+            seen = []
+
+            async def reply(client, question, history, chunks):
+                seen.extend(chunks)
+                yield 'Video answer [training-video-1/chapter-1:1]'
+
+            with patch('app.routers.qa.stream_reply', reply), patch.object(app.state, 'openai', object()):
+                answer = self.client.post(f'/qa-sessions/{session_id}/chat', json={
+                    'message': 'videoworkflow',
+                })
+            self.assertEqual(answer.status_code, 200)
+            self.assertIn('"type": "done"', answer.text)
+            self.assertTrue(any('videoworkflow' in chunk.text for chunk in seen))
+
+    def test_training_file_changes_refresh_workers_without_mutating_old_snapshot(self):
+        workers = [app.state.handbook, HandbookStore(self.path, 2400, self.training_path)]
+        old_index = workers[1].get_index()
+        self.training_path.write_text(
+            'Video 2 link: https://example.com/rolematch\nScript Video 2:\n'
+            'RoleMatch newvideoworkflow ranks open jobs.', encoding='utf-8',
+        )
+        for worker in workers:
+            index = worker.get_index()
+            self.assertFalse(index.search('videoworkflow'))
+            result = index.search('newvideoworkflow')[0]
+            self.assertEqual(result.source_id, 'training-video-2/overview:1')
+            self.assertTrue(index.search('oldworkflow'))
+        self.assertTrue(old_index.search('videoworkflow'))
 
     def test_real_handbook_still_loads(self):
         path = Path(__file__).resolve().parents[1] / 'howIvyWorksHandbook.ts'
         index = HandbookIndex(path)
         self.assertGreater(index.chapter_count, 0)
         self.assertTrue(index.search('interview'))
+
+    def test_real_training_videos_are_all_indexed_with_handbook(self):
+        root = Path(__file__).resolve().parents[1]
+        index = HandbookStore(root / 'howIvyWorksHandbook.ts', 2400,
+                              root / 'trainingvideo.txt').get_index()
+        videos = {chunk.chapter_id for chunk in index.chunks if chunk.file == 'trainingvideo.txt'}
+        self.assertEqual(videos, {f'training-video-{number}' for number in range(1, 7)})
+        self.assertTrue(any(chunk.file == 'trainingvideo.txt' for chunk in index.search('RoleMatch')))
+        self.assertTrue(any(chunk.file == 'howIvyWorksHandbook.ts' for chunk in index.search('interview')))
+        self.assertEqual(len({chunk.source_id for chunk in index.chunks}), len(index.chunks))
 
 
 if __name__ == '__main__':
