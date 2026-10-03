@@ -1,0 +1,380 @@
+Video 1 link: https://ivy2.octopyd.com/support/trainingvideos/ivy-end-to-end-hiring-os  
+Script Video 1:
+Walkthrough
+
+Chapter Guide
+15 chapters
+Chapter 1
+
+One End-to-End Hiring Platform
+Welcome to Octopyd's enterprise hiring operating system. In this demo, we will follow one end-to-end hiring workflow from approved demand through job setup, candidate discovery, evaluation, outreach, interviews, hiring decisions, administration, and executive analytics and reporting.
+
+The goal is simple: help companies hire stronger candidates faster, while reducing the time, cost, and operational effort required across the hiring team. Octopyd helps teams identify the right people sooner, move with confidence, and secure high-quality candidates before they disappear from the market.
+
+Although Octopyd supports the full hiring lifecycle, it is designed to be easy to adopt. Teams can get up and running quickly, often within a day, with a user-friendly interface that guides each person through their part of the workflow.
+
+Octopyd is not another disconnected recruiting app. It connects talent acquisition teams, hiring managers, HR, finance, department leaders, interviewers, and external recruiters in one controlled workflow, with permissions, auditability, and automation built in.
+
+Chapter 2
+
+Meet Your AI Agent Team
+Before we enter the workflow, let me introduce you to the agent team inside Octopyd.
+
+Ivy is the evaluation and candidate-management agent. Ivy evaluates candidates against the job, analyzes hiring-manager feedback, and over time learns and adapts to the team's real selection preferences.
+
+Levi is the sourcing agent. Levi looks for new candidates based on the criteria specified by Ivy and the hiring team.
+
+Evie is the candidate rediscovery agent. Evie searches the gold mine of previously applied candidates and identifies people who may match a new role.
+
+Nova is the outreach agent. Nova runs sequenced communication with sourced candidates, helping the team turn outbound discovery into candidate engagement.
+
+Arvo is the scheduling and feedback agent. Arvo dynamically navigates candidate movement through the hiring journey by scheduling interviews, managing RSVPs and rescheduling, collecting feedback, and summarizing input for easier decision-making.
+
+Together, these agents help hiring teams find, evaluate, engage, schedule, hire, and report. They support better and faster decisions, while the hiring team stays in control.
+
+Chapter 3
+
+Governed Hiring Demand with Requisitions
+Enterprise hiring starts with controlled demand. On the Requisitions page, Octopyd gives the organization a structured, yet customizable, approval path before roles are opened or staffed.
+
+A requisition can move from draft through department head review, HR approval, finance approval, and final approval before automatic job posting. Each step has a business owner: the hiring manager defines the need, the department head validates leveling and team fit, HR confirms compensation and compliance, finance reviews budget, and final approvers authorize the hire.
+
+This matters in enterprise environments because headcount, compensation, and location decisions need a durable record. Octopyd keeps the request, approvals, changes, linked job postings, active post counts, and hired progress connected to the same requisition number.
+
+Chapter 4
+
+The Job as Your Operational Workspace
+Once demand is approved, Octopyd turns it into an operational job workspace. A job can come from an approved requisition, an ATS import, or direct creation, but once it exists it becomes the workspace for evaluation, sourcing, interviews, and outcomes.
+
+The job record stores more than a title and description. It carries the department, hiring manager, hiring team, HR authority, job poster identity, category tags, source configuration, evaluation settings, and the default candidate journey.
+
+For enterprise teams, the Settings and Activity areas are especially important. Assignment changes are recorded with the actor and the affected member or recruiter, so job ownership changes are visible later instead of being lost in email, chat, or side conversations.
+
+Chapter 5
+
+Connected ATS, Calendar, and Mailbox
+Next, we connect the systems that make the workflow operational. Octopyd can import jobs and applicants from integrated systems, use calendar free-busy signals for scheduling, and send interview communications through a company-managed AI mailbox.
+
+The ATS connection supports import-first recruiting operations. Jobs and applicants can enter Octopyd from the existing applicant tracking system, then converge with standalone jobs, requisition-driven jobs, resume uploads, LinkedIn sources, recruiter nominations, Evie rediscovery, and Levi sourcing.
+
+Calendar and mailbox integrations power Arvo, the scheduling agent. Interviewers can connect read-only free-busy access, while the managed mailbox organizes interview events, sends scheduling emails, and monitors calendar event state.
+
+Chapter 6
+
+One Unified Candidate Pool
+With jobs and integrations in place, Octopyd brings candidate supply into one company candidate pool. Candidates can come from direct applications through the dedicated Talent Portal, recruiter submissions through the Recruiter Portal, ATS imports, resume uploads, Levi sourcing, Evie candidate rediscovery, LinkedIn, and other sources.
+
+The important point is that these entry points stay connected to the same controlled hiring workflow. Candidates get a simple application experience, external recruiters get a focused portal for submitting and tracking their candidates, and internal teams keep the process permissioned, auditable, and organized.
+
+A key distinction is that the candidate pool is not the same as an active job pipeline. Candidates remain in the pool until they are shortlisted into a specific job journey, keeping talent organized without prematurely moving people into process.
+
+Chapter 7
+
+AI Evaluation and the Daily Talent Dose
+Ivy's adaptive evaluation layer turns the job description into a detailed scoring basis. Ivy does not just scan for keywords. It looks across the full job description to build a structured evaluation rubric, generating roughly 20 to 30 evaluation and gating criteria. Ivy then ranks candidates against that rubric.
+
+This is where the hiring team stops reading hundreds of resumes one by one and starts reviewing structured signal. The full talent pool is still available, but Ivy presents a Daily Talent Dose: a small, manageable group of high-ranked candidates for the team to review.
+
+Hiring managers still make the decision. When a hiring manager rejects a high-ranked candidate or gives thumbs-down feedback, Ivy learns from that signal and improves the next Daily Talent Dose from the remaining pool.
+
+Within a few review cycles, Ivy learns the hiring team's real selection preferences, even when some preferences were not explicit in the job description. New candidates are then evaluated against those learned preferences within minutes of entering the pool and can quickly appear in the Daily Talent Dose.
+
+For teams coming from manual screening, this is where the biggest speed gain appears. Existing customers have been able to compress application-to-shortlist workflows from several weeks to a few days, and often within a week.
+
+Chapter 8
+
+From Shortlist to Candidate Journey
+After evaluation, the shortlist becomes the operational handoff. Shortlisted candidates enter the Talent Tracker, where Ivy manages the candidate-specific journey for the selected job.
+
+Each job has one default journey template. A typical journey may include Intro Call, Technical Interview, Onsite, Offer Letter, Hired, and Rejected.
+
+The journey is fully customizable per job and per candidate. The team can add a second technical interview, skip a stage, or use different interview formats. Interviews can be one-on-one, grouped with multiple interviewers, or assigned to any available interviewer.
+
+This is where candidate movement becomes visible. The team can see who is active, what stage they are in, what needs to happen next, and where a decision is waiting.
+
+Chapter 9
+
+Reliable Interviewer Availability
+Before a candidate books an interview, Arvo needs reliable interviewer availability. Each hiring team member can define timezone, bookable work hours, buffer times, and inclusion or exclusion overrides.
+
+Arvo applies those availability rules first, then checks live calendar conflicts using read-only free-busy access through the company-provided email account.
+
+This lets Arvo streamline scheduling without the usual back-and-forth emails. Based on current platform data, 25% of candidates book their interview in less than 32 minutes, and 50% book in less than 6 hours. That saves time for recruiters, interviewers, hiring managers, and candidates.
+
+Chapter 10
+
+Automated Scheduling and Interview Operations
+When a candidate reaches a schedulable stage, Arvo coordinates the scheduling workflow. Arvo emails the scheduling request for the active stage, the candidate selects from validated times, and the system creates the calendar event from the company-managed mailbox.
+
+Arvo stores the meeting info and interviewer assignments. The shared calendar invite includes candidate and interviewer context, while keeping internal interview goals out of candidate-visible invite content.
+
+The Interviews page becomes the operations dashboard after booking. HR can review booking status, RSVP status, reminders, moved meeting times, provider cancellations, calendar monitoring issues, and rescheduling needs. If a required attendee declines, Arvo can cancel the interview and initiate a new booking flow.
+
+Chapter 11
+
+Structured Feedback and Controlled Decisions
+After interviews, Arvo keeps feedback attached to the candidate, job, journey stage, interview, and reviewer.
+
+Interviewers can add comments and recommendations. Authorized users can make reject or advance decisions. Interviewers without decision authority can still recommend reject or recommend advance, and their feedback remains part of the candidate record.
+
+Sensitive information, such as compensation or salary discussion, is stored separately and has stricter viewing rules. Permission alone is not enough. The viewer must also have the right job authority, such as department head, hiring manager, or HR authority for that job.
+
+Chapter 12
+
+From Offer to Hired
+When an authorized user moves a candidate from Offer Letter to Hired, Octopyd records the hiring outcome.
+
+If the approved headcount is filled, Octopyd notifies HR approvers to pause active job postings. Authorized HR users can also add the new hire to the org chart hierarchy.
+
+Sensitive employee data can be completed later in the Company Members page by authorized HR users. This keeps the hiring decision, employee conversion, and HR record connected without exposing sensitive fields to the wrong audience.
+
+Chapter 13
+
+Administration, Permissions, and Org Chart
+Enterprise recruiting also requires administration. Admins can manage who can access Octopyd, edit jobs, modify hiring team members, work with external recruiters, access sensitive data, and approve tasks.
+
+Just as important, admins control scope. A user may have access to only their own jobs, their own department, or the full company.
+
+The Org Chart provides a published reporting hierarchy with a permissioned planning mode. Authorized users can plan and save future reporting changes before they are published.
+
+Chapter 14
+
+Analytics and Hiring Outcomes
+The final step is Analytics. Octopyd turns pipeline history into well-structured reporting that leaders can use to improve hiring performance across company, department, manager, recruiter, job, and time period.
+
+Analytics show pipeline facts, rejection reasons, stage progress speeds, transition timing, recent hired-candidate journeys, scheduling performance, and external recruiter yield and ranking.
+
+Leaders have access to live reporting as well as historical quarterly and annual reports in PDF or Excel format. This gives executives and operators a shared view of what is working, where hiring is slowing down, and which sources are producing results.
+
+Chapter 15
+
+One Connected Hiring System
+To summarize, Octopyd connects the full hiring lifecycle: governed demand, job setup, source configuration, candidate intake, AI evaluation, shortlist, outreach, scheduling, feedback, offer, hired outcome, employee conversion, administration, analytics, and audit trail.
+
+The enterprise value is not only speed. It is consistency, permission control, operational visibility, recruiter and interviewer coordination, cleaner reporting, and fewer disconnected handoffs between HR, hiring managers, finance, candidates, and external recruiting partners.
+
+Ivy, Levi, Evie, Nova, and Arvo each handle a different part of the workflow, but together they operate as one connected hiring system.
+
+
+
+Video 2 link: https://ivy2.octopyd.com/support/trainingvideos/ai-candidate-ranking-daily-dose  
+Script Video 2:
+In This Video
+
+Turn a job description into a rubric with critical requirements and weighted criteria
+Evaluate and rank applicants consistently
+Refine the rubric and rankings through hiring-manager review rounds
+Approve a score threshold for automatic shortlisting
+Keep candidates below the threshold available for manual review
+Review resumes, explainable scores, and supporting evidence in the Daily Talent Review Arena
+Ask Ivy contextual questions and record feedback
+Choose Move to Tracker, Decide Later, or Not Interested
+Start the Candidate Journey after shortlisting
+
+
+
+Video 3 link: https://ivy2.octopyd.com/support/trainingvideos/ask-for-candidate-availability  
+Script Video 3:
+Choose how you want to schedule
+Open the candidate’s Candidate Journey tab and find the interview stage. Open its scheduling dropdown, shown as Candidate picks a time in Figure 1, and turn on Ask for availability.
+
+Interview stage scheduling dropdown with numbered arrows for Ask for availability, Candidate picks a time, Send Scheduling Email, and Manual Schedule.
+Figure 1. Scheduling options on an interview stage. “Ask for availability” is off in this example; turn it on to request availability.
+Open full-size snapshot
+Follow the numbered arrows
+1
+Ask for availability
+2
+Candidate picks a time
+3
+Send Scheduling Email
+4
+Manual Schedule
+Your team books
+The candidate shares availability; your team makes the booking.
+
+Ask for availability: On
+Candidate picks a time: Off
+Give candidates both options
+The candidate books from interviewer availability or shares availability for your team to use.
+
+Ask for availability: On
+Candidate picks a time: On
+At least one scheduling option must stay on.
+
+Save and send
+Click Save journey to apply the change. Send Scheduling Email sends or re-sends the request based on the saved settings. When both options are enabled, one email offers both choices.
+
+Where settings apply
+Set company-wide defaults in Settings > Recruiting Operations > AI Agents > Candidate scheduling. You can also choose different settings in a job’s journey template or an individual candidate’s journey.
+
+Step 2
+
+Candidates share availability
+The request email takes candidates to their application in the talent portal. Share your availability opens the Interview Availability page on a phone or computer.
+
+Candidate Interview Availability calendar with numbered arrows for interview type tabs, connected calendars, an available time block, and Save changes. Personal details are blurred.
+Figure 2. The candidate’s Interview Availability page. Connected-calendar conflicts appear as “Busy in calendar.”
+Open full-size snapshot
+Follow the numbered arrows
+1
+Virtual / Onsite interview tabs
+2
+Connected calendars
+3
+An Available time block
+4
+Save changes
+What candidates can control
+Time zone and calendars
+Choose a time zone and optionally connect one or more Google or Microsoft calendars to account for busy times.
+
+Available and unavailable times
+Mark specific dates and times as Available or Unavailable, using touch controls on mobile or dragging on desktop.
+
+Interview preferences
+Set separate preferences for Virtual interview and Onsite interview, including work hours, buffers, minimum notice, and how far ahead interviews can be booked.
+
+Save and update
+Click Save changes and return whenever plans change. The time zone and connected calendars are shared across both interview types.
+
+Sharing availability does not book an interview
+Your team books the interview in a separate step. When a stage is waiting for your team to book, saved availability updates notify the job’s hiring manager, HR, and department head.
+
+Step 3
+
+Book from Manual Schedule
+Open Manual Schedule on the active Intro Call or Tech Interview stage. Review the duration, time zone, and interviewers, then choose a date. The candidate is always included as an attendee.
+
+Manual Schedule window with numbered arrows for duration and time zone, interviewer selection, green recommended slots, white unconfirmed slots, red blocked slots, and Book interview. Personal details are blurred.
+Figure 3. The updated Manual Schedule window. Here, 13:45 is recommended. Select a time to enable “Book interview.”
+Open full-size snapshot
+Follow the numbered arrows
+1
+Duration and time zone
+2
+Include an interviewer
+3
+Green: candidate-recommended time
+4
+White: unconfirmed; needs RSVP
+5
+Red: blocked time
+6
+Book interview
+Time-slot appearance	What it means
+Green: Time recommended by candidate	The candidate marked this time as available, with no blocking conflict found in the available calendar data and scheduling rules.
+White: Not decided – needs RSVP	The time is unconfirmed. You can book it; the candidate is asked to confirm by accepting the calendar invitation.
+Red: Blocked by candidate	The time is blocked by availability settings or a calendar conflict and cannot be selected in normal booking mode.
+Check before booking
+Hover over a time for details. Check calendar sync status and refresh when needed. If a connected candidate calendar cannot be checked, otherwise bookable times are shown as unconfirmed.
+
+Book the interview
+Choose a time and click Book interview. Ivy sends the calendar invitation and, when the candidate has an email on file, an email with interview details. A recommended time is announced as confirmed; an unconfirmed time asks the candidate to accept the invitation.
+
+Override: Book outside availability
+For a time already agreed with participants, an authorized user must provide a reason and confirm authorization. This bypasses candidate and interviewer availability checks and asks the candidate to confirm the time.
+
+
+Video 4 link: https://ivy2.octopyd.com/support/trainingvideos/external-recruiter-workflow  
+Script Video 4:
+Walkthrough
+
+Chapter Guide
+5 chapters
+Chapter 1
+
+Open external recruiter administration
+This demo shows how Ivy manages external recruiter collaboration without mixing recruiter claims with candidate rejection outcomes. Start at the Company Members page and open the External Recruiters tab.
+
+The External Recruiters area lists recruiter accounts, invitation state, contract metadata, assignment controls, and recruiter-specific settings. This gives admins one place to manage partner access instead of assigning jobs informally through email.
+
+Chapter 2
+
+Invite a recruiter and record contract metadata
+Add or edit a recruiter account. Ivy can create or link the recruiter, send an invitation email, and add the recruiter to the company External Recruiters list.
+
+Recruiter invitation emails are sent from the company AI Managed Mailbox when it is connected. If the mailbox is not available, Ivy falls back to the configured notification sender. The sent invitation is recorded as an External Recruiter Invite in email logs.
+
+Use this section to show administrative details such as contract notes, contract expiration date, and whether approved nominations should skip intro call for that recruiter.
+
+Chapter 3
+
+Assign jobs in bulk or from job settings
+Next, assign jobs to the recruiter. Admins can assign jobs in bulk from Company Members, and job-level recruiter assignments can also be visible from the job settings workflow.
+
+The key enterprise behavior is accountability. When a recruiter is added to or removed from a job, Ivy can record which recruiter changed and where the assignment happened. That makes partner coverage easier to audit later.
+
+Chapter 4
+
+Review recruiter nominations before accepting ownership
+Move to the Candidate Approval page. External recruiters submit candidates through the recruiter portal, and those nominations enter an internal approval queue before the candidate can join the core hiring flow.
+
+Approving a nomination can add the candidate into the hiring flow. Declining a nomination declines the recruiter ownership claim. It is not the same as rejecting the candidate for the job.
+
+Make that distinction explicit. A nomination may be declined because the candidate already exists, already applied, was introduced by someone else, or has already communicated with an employee. Those are recruiter-claim outcomes, not candidate rejection outcomes.
+
+Chapter 5
+
+Track recruiter candidates and recruiter yield
+Once nominations are approved, recruiter candidates can appear in the hiring pipeline. Use the Talent Tracker to show recruiter candidates in context with other sources when sample data is available.
+
+Then move to the Analytics page. Recruiter analytics can summarize yield and stage progression separately from declined recruiter ownership claims. This keeps partner performance reporting clean and avoids counting nomination declines as candidate rejections.
+
+
+Video 5 link: https://ivy2.octopyd.com/support/trainingvideos/connect-your-free-busy-calendar  
+Script Video 5:
+Chapter Guide
+5 chapters
+Chapter 1
+
+Open the calendar sync entry point
+This demo shows how an interviewer connects a free/busy calendar and configures interview availability. Start at the Interview Availability page.
+
+The free/busy calendar connection lets Ivy remove live calendar conflicts from candidate-facing bookable times. It is read-only availability signal for scheduling. It is separate from the company AI Managed Mailbox that organizes interview events.
+
+Chapter 2
+
+Grant Google or Microsoft calendar access
+Select the calendar provider and complete the authorization flow. The user may be asked to choose an account, review permissions, and approve access.
+
+Explain the permission clearly. Ivy uses free/busy data to know when the interviewer is unavailable. This helps prevent candidates from booking over existing meetings without exposing the detailed content of the interviewer calendar.
+
+After authorization, return to Ivy and confirm that the connection status is shown as connected.
+
+Chapter 3
+
+Set timezone, workdays, and work hours
+Next, configure the base availability rules. Set the timezone, choose bookable weekdays, and define work hours. Disabling a weekday removes that day from candidate booking for both virtual and onsite availability.
+
+The timezone is shared with the user profile and Interview Availability, so hiring-team-facing pages use the same source-of-truth timezone. The candidate may view slots in a different timezone, while Ivy validates the final selected start and end as UTC.
+
+Consistent timezone settings reduce scheduling confusion for distributed teams, especially when candidates and interviewers are in different regions.
+
+Chapter 4
+
+Configure buffers, notice, inclusions, and exclusions
+Set buffer before meetings, buffer after meetings, and minimum scheduling notice. These controls prevent candidates from booking meetings too close together or too close to the current time.
+
+Then review inclusion and exclusion overrides. Work hours provide the default baseline, inclusions are added on top, and exclusions are removed last, so a blocked window stays blocked even if an inclusion overlaps it. A weekday that is switched off is not bookable at all. Calendar conflicts come from cached calendar data in the preview, and are checked again at booking.
+
+If the page has separate virtual and onsite controls, show both tabs. Interviewers may have different availability rules for remote calls and onsite interviews.
+
+Chapter 5
+
+Preview candidate bookable times and save
+Use Preview Bookable Times to see how candidates would experience the availability rules. The preview reflects working hours, buffers, notice rules, and cached calendar conflicts, and like candidate booking it never offers today, but it does not create or reserve a meeting.
+
+After confirming the preview, save the availability settings. Close the demo by explaining the operational result: when ARVO sends a scheduling link, candidates see only times that satisfy the interviewer rules and current free/busy calendar state.
+
+
+Video 6 link: https://ivy2.octopyd.com/support/trainingvideos/rolematch-candidate-job-matching  
+Script Video 6:
+How the RoleMatch button turns a static job list into a ranked shortlist: a candidate uploads one résumé, sees every open role ordered by fit, and starts an application that is already filled in.
+In This Video
+Where the RoleMatch button sits on a careers page
+A candidate uploading a résumé from the careers page
+Matching that goes beyond keywords to a role’s actual requirements
+A ranked list of best-fit roles with a match percentage on each
+Starting an application prefilled from the résumé
+The funnel effect: fewer mismatched applications and less drop-off
