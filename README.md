@@ -2,7 +2,8 @@
 
 FastAPI Q&A service following the structure of `../interview-assistant`:
 token authentication, chat sessions, conversation history, and Server-Sent
-Events (SSE). Its only knowledge source is `howIvyWorksHandbook.ts`.
+Events (SSE). Its knowledge sources are `howIvyWorksHandbook.ts` and
+`trainingvideo.txt`.
 
 ## Run locally
 
@@ -73,15 +74,21 @@ saved. Concurrent chat requests for the same session return HTTP 409.
 Each source includes `source_id`, `file`, `chapter_id`, `section_id`, and `title`.
 Answers are instructed to cite `[source_id]`; the sources array contains all
 retrieved passages, which may include passages the answer did not use.
+Video sources also include `video_url`. When a video supports an answer, the
+assistant is instructed to add `For more information, watch: <video_url>`.
+If it cites a video but omits its link, the service appends the recommendation
+to the streamed answer. Repeated citations to the same video share one link.
 
-## Retrieval from the TypeScript file
+## Retrieval from the handbook and training videos
 
 1. At startup, read the static `howIvyWorksHandbook` exported array using JSON5.
    TypeScript code is never executed. This loader supports the supplied literal
    array format, not arbitrary TypeScript expressions, imports, or computed values.
 2. Extract named published fields and structured email samples. Exclude all
    `Unpublished_*` properties and unknown fields before indexing or model calls.
-3. Split sections into overlapping chunks and build an in-memory BM25 index.
+3. Read `trainingvideo.txt`, splitting scripts by video and chapter, retaining
+   video links. Scripts without chapters are indexed as a video overview.
+   Split both sources into overlapping chunks and build one in-memory BM25 index.
 4. Retrieve the top passages for each question. Short pronoun-based follow-ups
    include the previous user question in retrieval.
 5. Send retrieved passages and recent chat history to OpenAI's
@@ -90,8 +97,8 @@ retrieved passages, which may include passages the answer did not use.
    a fixed fallback without calling OpenAI.
 
 No embeddings, vector database, web search, or other knowledge
-sources are used. Retrieval is lexical: questions should use handbook terminology;
-synonyms and questions in languages other than the handbook's English may retrieve
+sources are used. Retrieval is lexical: questions should use reference terminology;
+synonyms and questions in languages other than the references' English may retrieve
 poorly. Model grounding is prompt-based and does not guarantee factual accuracy.
 The selected excerpts and recent conversation are sent to OpenAI; `store=False`
 disables Responses application storage.
@@ -105,10 +112,12 @@ curl -X POST http://localhost:8501/knowledge-base \
 ```
 
 The response contains `file`, `chapters`, `sections`, and `chunks`, just like
-`GET /knowledge-base`. The service validates the UTF-8 `.ts` file and builds the
+`GET /knowledge-base`. Chapter and section counts describe the handbook; the chunk
+count includes both sources. The service validates the UTF-8 `.ts` file and builds the
 replacement index before atomically saving it to `HANDBOOK_PATH`. The uploaded
 filename does not change that destination. Subsequent searches and chat turns use
-the updated content without restarting or configuring the API again. Existing
+the updated content without restarting or configuring the API again. Training
+video content remains in the index after handbook uploads. Existing
 sessions and history are preserved; replies already streaming keep their original
 excerpts. Missing files or invalid content return HTTP 422, and files over the
 default 10 MiB limit return HTTP 413. Rejected uploads leave the handbook unchanged.
@@ -121,6 +130,13 @@ uploads when replacing containers. Concurrent valid uploads use the last saved
 version. You can also atomically replace the file directly to refresh retrieval.
 `HANDBOOK_PATH` can point to another `.ts` file with the same export and schema.
 Malformed or missing handbook data causes startup to fail.
+
+`TRAINING_VIDEO_PATH` defaults to the project's `trainingvideo.txt`. It must be a
+UTF-8 file with `Video N link: https://...` and `Script Video N:` blocks, optionally
+containing `Chapter N` headings followed by a title and script text. Missing or
+invalid training data also causes startup to fail. Workers detect changes to either
+source on the next request. To update video scripts, replace this file directly;
+the upload endpoint continues to accept `.ts` handbook files only.
 
 ## Configuration
 
@@ -138,6 +154,7 @@ variables.
 | `DEBUG` | `false` |
 | `openai-timeout-seconds` | `300` |
 | `HANDBOOK_PATH` | Project's `howIvyWorksHandbook.ts` |
+| `TRAINING_VIDEO_PATH` | Project's `trainingvideo.txt` |
 | `HANDBOOK_MAX_UPLOAD_BYTES` | `10485760` (10 MiB) |
 | `RAG_TOP_K` | `6` |
 | `RAG_CHUNK_CHARS` | `2400` plus chapter/section heading |
