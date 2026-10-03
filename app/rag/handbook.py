@@ -53,6 +53,18 @@ class HandbookIndex:
         if path.suffix != ".ts":
             raise ValueError("HANDBOOK_PATH must point to a .ts file")
         source = path.read_text(encoding="utf-8")
+        self._build(source, path.name, chunk_chars)
+
+    @classmethod
+    def from_source(cls, source: str, filename: str, chunk_chars: int = 2400):
+        index = cls.__new__(cls)
+        try:
+            index._build(source, filename, chunk_chars)
+        except (ValueError, TypeError, KeyError, AttributeError, RecursionError) as exc:
+            raise ValueError("Invalid handbook export or chapter/section schema") from exc
+        return index
+
+    def _build(self, source: str, filename: str, chunk_chars: int):
         match = re.search(r"export\s+const\s+howIvyWorksHandbook\s*(?::[^=]+)?=\s*", source)
         if not match:
             raise ValueError("Missing howIvyWorksHandbook export")
@@ -63,20 +75,25 @@ class HandbookIndex:
         self.chunks: list[Chunk] = []
         self.section_count = 0
         for chapter in chapters:
-            self._add_record(path.name, chapter, chapter, chunk_chars)
+            self._add_record(filename, chapter, chapter, chunk_chars)
             for section in chapter.get("sections", []):
                 self.section_count += 1
-                self._add_record(path.name, chapter, section, chunk_chars)
+                self._add_record(filename, chapter, section, chunk_chars)
         if not self.chunks:
             raise ValueError("The handbook has no published content")
         self.terms = [Counter(tokenize(chunk.text)) for chunk in self.chunks]
         self.lengths = [sum(terms.values()) for terms in self.terms]
         self.average_length = sum(self.lengths) / len(self.lengths) or 1
         self.frequencies = Counter(term for terms in self.terms for term in terms)
-        self.file = path.name
+        self.file = filename
         self.chapter_count = len(chapters)
 
     def _add_record(self, file: str, chapter: dict, record: dict, limit: int):
+        if not isinstance(record, dict) or any(
+            not isinstance(record.get(key), str) or not record[key].strip()
+            for key in ("id", "title")
+        ):
+            raise ValueError("Chapters and sections require nonempty string ids and titles")
         text = "\n".join(published_text(record)).strip()
         title = record["title"]
         heading = f"{chapter['title']} / {title}\n"
