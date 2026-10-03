@@ -24,6 +24,7 @@ class Settings(BaseSettings):
         default_factory=lambda: int(os.getenv("openai-timeout-seconds", "300")), gt=0
     )
     HANDBOOK_PATH: Path = PROJECT_ROOT / "howIvyWorksHandbook.ts"
+    HANDBOOK_MAX_UPLOAD_BYTES: int = Field(10 * 1024 * 1024, gt=0)
     RAG_TOP_K: int = Field(6, ge=1, le=20)
     RAG_CHUNK_CHARS: int = Field(2400, ge=500, le=10000)
     SESSION_TTL_SECONDS: int = Field(
