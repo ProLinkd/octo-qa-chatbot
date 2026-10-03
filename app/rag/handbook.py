@@ -43,9 +43,13 @@ class Chunk:
     section_id: str
     title: str
     text: str
+    video_url: str | None = None
 
     def source(self) -> dict:
-        return {key: getattr(self, key) for key in ("source_id", "file", "chapter_id", "section_id", "title")}
+        source = {key: getattr(self, key) for key in ("source_id", "file", "chapter_id", "section_id", "title")}
+        if self.video_url:
+            source["video_url"] = self.video_url
+        return source
 
 
 class HandbookIndex:
@@ -56,10 +60,16 @@ class HandbookIndex:
         self._build(source, path.name, chunk_chars)
 
     @classmethod
-    def from_source(cls, source: str, filename: str, chunk_chars: int = 2400):
+    def from_source(
+        cls, source: str, filename: str, chunk_chars: int = 2400,
+        training_source: str | None = None, training_filename: str = "trainingvideo.txt",
+    ):
         index = cls.__new__(cls)
         try:
             index._build(source, filename, chunk_chars)
+            if training_source is not None:
+                index._add_training_videos(training_source, training_filename, chunk_chars)
+                index._build_terms()
         except (ValueError, TypeError, KeyError, AttributeError, RecursionError) as exc:
             raise ValueError("Invalid handbook export or chapter/section schema") from exc
         return index
@@ -81,14 +91,48 @@ class HandbookIndex:
                 self._add_record(filename, chapter, section, chunk_chars)
         if not self.chunks:
             raise ValueError("The handbook has no published content")
+        self._build_terms()
+        self.file = filename
+        self.chapter_count = len(chapters)
+
+    def _build_terms(self):
         self.terms = [Counter(tokenize(chunk.text)) for chunk in self.chunks]
         self.lengths = [sum(terms.values()) for terms in self.terms]
         self.average_length = sum(self.lengths) / len(self.lengths) or 1
         self.frequencies = Counter(term for terms in self.terms for term in terms)
-        self.file = filename
-        self.chapter_count = len(chapters)
 
-    def _add_record(self, file: str, chapter: dict, record: dict, limit: int):
+    def _add_training_videos(self, source: str, filename: str, limit: int):
+        videos = list(re.finditer(r"^Video (\d+) link:\s*(https?://\S+)[ \t]*$", source, re.M))
+        if not videos:
+            raise ValueError("Training text must contain video links and scripts")
+        for position, video in enumerate(videos):
+            end = videos[position + 1].start() if position + 1 < len(videos) else len(source)
+            script = source[video.end():end].strip()
+            script = re.sub(r"^Script Video \d+:\s*", "", script).strip()
+            if not script:
+                raise ValueError("Training video scripts must not be empty")
+            number, url = video.groups()
+            chapter = {"id": f"training-video-{number}", "title": f"Training video {number}"}
+            sections = list(re.finditer(r"^Chapter (\d+)[ \t]*$", script, re.M))
+            if not sections:
+                self._add_record(filename, chapter, {
+                    "id": "overview", "title": chapter["title"], "body": [script],
+                }, limit, video_url=url)
+            for offset, section in enumerate(sections):
+                stop = sections[offset + 1].start() if offset + 1 < len(sections) else len(script)
+                body = script[section.end():stop].strip()
+                if not body:
+                    raise ValueError("Training video chapters must not be empty")
+                title, _, content = body.partition("\n")
+                self._add_record(filename, chapter, {
+                    "id": f"chapter-{section.group(1)}", "title": title,
+                    "body": [content.strip()],
+                }, limit, video_url=url)
+
+    def _add_record(
+        self, file: str, chapter: dict, record: dict, limit: int,
+        video_url: str | None = None,
+    ):
         if not isinstance(record, dict) or any(
             not isinstance(record.get(key), str) or not record[key].strip()
             for key in ("id", "title")
@@ -97,6 +141,8 @@ class HandbookIndex:
         text = "\n".join(published_text(record)).strip()
         title = record["title"]
         heading = f"{chapter['title']} / {title}\n"
+        if video_url:
+            heading += f"Video link: {video_url}\n"
         start = 0
         part = 1
         while start < len(text):
@@ -108,7 +154,7 @@ class HandbookIndex:
             self.chunks.append(Chunk(
                 source_id=f"{chapter['id']}/{record['id']}:{part}",
                 file=file, chapter_id=chapter["id"], section_id=record["id"],
-                title=title, text=heading + text[start:end],
+                title=title, text=heading + text[start:end], video_url=video_url,
             ))
             if end == len(text):
                 break
