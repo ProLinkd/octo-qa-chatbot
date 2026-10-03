@@ -3,7 +3,7 @@ import logging
 
 import anyio
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, field_validator
 
@@ -47,18 +47,45 @@ async def get_session(session_id: str, request: Request):
     return session.detail()
 
 
-@router.get("/knowledge-base")
-async def knowledge_base(request: Request):
-    index = request.app.state.handbook
+def index_detail(index):
     return {"file": index.file, "chapters": index.chapter_count,
             "sections": index.section_count, "chunks": len(index.chunks)}
 
 
+@router.get("/knowledge-base")
+async def knowledge_base(request: Request):
+    index = await anyio.to_thread.run_sync(request.app.state.handbook.get_index)
+    return index_detail(index)
+
+
+@router.post("/knowledge-base")
+async def update_knowledge_base(request: Request, file: UploadFile = File(...)):
+    try:
+        if not file.filename or not file.filename.lower().endswith(".ts"):
+            raise HTTPException(422, "Upload a .ts file using the 'file' field")
+        content = await file.read(settings.HANDBOOK_MAX_UPLOAD_BYTES + 1)
+        if len(content) > settings.HANDBOOK_MAX_UPLOAD_BYTES:
+            raise HTTPException(413, "Handbook file exceeds the upload size limit")
+        if not content:
+            raise HTTPException(422, "Handbook file must not be empty")
+        try:
+            index = await anyio.to_thread.run_sync(request.app.state.handbook.update, content)
+        except ValueError as exc:
+            raise HTTPException(422, "Invalid UTF-8 handbook: expected the howIvyWorksHandbook array and chapter/section schema") from exc
+        except OSError as exc:
+            logger.exception("Failed to persist handbook update")
+            raise HTTPException(503, "Could not save the handbook update. Please retry.") from exc
+        return index_detail(index)
+    finally:
+        await file.close()
+
+
 @router.get("/knowledge-base/search")
 async def search(request: Request, query: str = Query(min_length=1, max_length=8000)):
+    index = await anyio.to_thread.run_sync(request.app.state.handbook.get_index)
     return {"results": [
         {**chunk.source(), "text": chunk.text}
-        for chunk in request.app.state.handbook.search(query, settings.RAG_TOP_K)
+        for chunk in index.search(query, settings.RAG_TOP_K)
     ]}
 
 
@@ -72,7 +99,8 @@ async def chat(session_id: str, body: ChatRequest, request: Request):
     if session is None:
         raise HTTPException(404, "Session not found or expired")
     try:
-        chunks = request.app.state.handbook.retrieve(body.message, session.messages, settings.RAG_TOP_K)
+        index = await anyio.to_thread.run_sync(request.app.state.handbook.get_index)
+        chunks = index.retrieve(body.message, session.messages, settings.RAG_TOP_K)
         if chunks and request.app.state.openai is None:
             raise HTTPException(503, "OpenAI API key is not configured")
     except BaseException:
