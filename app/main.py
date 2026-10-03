@@ -20,7 +20,8 @@ async def lifespan(app: FastAPI):
         raise RuntimeError("In-memory sessions require WEB_CONCURRENCY=1")
     logging.basicConfig(level=logging.INFO)
     app.state.handbook = await asyncio.to_thread(
-        HandbookStore, settings.HANDBOOK_PATH, settings.RAG_CHUNK_CHARS
+        HandbookStore, settings.HANDBOOK_PATH, settings.RAG_CHUNK_CHARS,
+        settings.TRAINING_VIDEO_PATH,
     )
     app.state.sessions = build_session_store()
     app.state.openai = AsyncOpenAI(
