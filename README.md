@@ -51,6 +51,7 @@ Keep this shared service token on your backend; do not embed it in a public brow
 | `GET /qa-sessions/{session_id}` | Read history and expiry |
 | `POST /qa-sessions/{session_id}/chat` | Ask a question; stream the answer |
 | `GET /knowledge-base` | Inspect indexed chapter, section, and chunk counts |
+| `POST /knowledge-base` | Upload an updated `.ts` handbook and refresh RAG immediately |
 | `GET /knowledge-base/search?query=interview` | Inspect retrieved published excerpts |
 | `GET /health-check` | Check service health |
 
@@ -88,14 +89,36 @@ retrieved passages, which may include passages the answer did not use.
    Instructions constrain answers to that evidence. No-match questions return
    a fixed fallback without calling OpenAI.
 
-No embeddings, vector database, file uploads, web search, or other knowledge
+No embeddings, vector database, web search, or other knowledge
 sources are used. Retrieval is lexical: questions should use handbook terminology;
 synonyms and questions in languages other than the handbook's English may retrieve
 poorly. Model grounding is prompt-based and does not guarantee factual accuracy.
 The selected excerpts and recent conversation are sent to OpenAI; `store=False`
 disables Responses application storage.
 
-Edit the existing `.ts` file and restart the service to rebuild the index.
+Upload the updated handbook as `multipart/form-data` with the required field `file`:
+
+```bash
+curl -X POST http://localhost:8501/knowledge-base \
+  -H 'Authorization: Token change-me' \
+  -F 'file=@./howIvyWorksHandbook.ts'
+```
+
+The response contains `file`, `chapters`, `sections`, and `chunks`, just like
+`GET /knowledge-base`. The service validates the UTF-8 `.ts` file and builds the
+replacement index before atomically saving it to `HANDBOOK_PATH`. The uploaded
+filename does not change that destination. Subsequent searches and chat turns use
+the updated content without restarting or configuring the API again. Existing
+sessions and history are preserved; replies already streaming keep their original
+excerpts. Missing files or invalid content return HTTP 422, and files over the
+default 10 MiB limit return HTTP 413. Rejected uploads leave the handbook unchanged.
+
+The handbook file and its parent directory must be writable by the service.
+Workers sharing `HANDBOOK_PATH` detect changes on their next retrieval request.
+Multiple instances need a shared filesystem for handbook updates; Redis shares
+sessions only. Use a persistent directory volume for `HANDBOOK_PATH` to retain
+uploads when replacing containers. Concurrent valid uploads use the last saved
+version. You can also atomically replace the file directly to refresh retrieval.
 `HANDBOOK_PATH` can point to another `.ts` file with the same export and schema.
 Malformed or missing handbook data causes startup to fail.
 
@@ -115,6 +138,7 @@ variables.
 | `DEBUG` | `false` |
 | `openai-timeout-seconds` | `300` |
 | `HANDBOOK_PATH` | Project's `howIvyWorksHandbook.ts` |
+| `HANDBOOK_MAX_UPLOAD_BYTES` | `10485760` (10 MiB) |
 | `RAG_TOP_K` | `6` |
 | `RAG_CHUNK_CHARS` | `2400` plus chapter/section heading |
 | `session-ttl-seconds` | `864000` (10 days) |
