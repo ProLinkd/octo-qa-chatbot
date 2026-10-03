@@ -10,7 +10,7 @@ from openai import AsyncOpenAI
 
 from app.core.config import settings
 from app.core.sessions import build_session_store
-from app.rag.handbook import HandbookIndex
+from app.rag.store import HandbookStore
 from app.routers.qa import router
 
 
@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
         raise RuntimeError("In-memory sessions require WEB_CONCURRENCY=1")
     logging.basicConfig(level=logging.INFO)
     app.state.handbook = await asyncio.to_thread(
-        HandbookIndex, settings.HANDBOOK_PATH, settings.RAG_CHUNK_CHARS
+        HandbookStore, settings.HANDBOOK_PATH, settings.RAG_CHUNK_CHARS
     )
     app.state.sessions = build_session_store()
     app.state.openai = AsyncOpenAI(
