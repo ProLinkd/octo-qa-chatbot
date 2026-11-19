@@ -138,6 +138,34 @@ invalid training data also causes startup to fail. Workers detect changes to eit
 source on the next request. To update video scripts, replace this file directly;
 the upload endpoint continues to accept `.ts` handbook files only.
 
+## Image downloader
+
+`POST /image-downloader` downloads an image from a URL and returns it as the response body.
+
+```json
+{
+  "download_url": "https://example.com/avatar.jpg"
+}
+```
+
+A successful response is `200` with the image's `Content-Type` and a
+`Content-Disposition: attachment` header named after the source file. JPEG, PNG,
+GIF, WebP, AVIF, BMP, and TIFF are accepted; the type is detected from the content,
+and SVG is rejected because it can contain scripts. Nothing is stored.
+
+```bash
+curl -X POST http://localhost:8501/image-downloader \
+  -H "Authorization: Token change-me" \
+  -H "Content-Type: application/json" \
+  -d '{"download_url": "https://example.com/avatar.jpg"}' \
+  -o avatar.jpg
+```
+
+A `400` response means the URL was rejected (not plain `http`/`https`, or it or a
+redirect resolves to a non-public address), or the file could not be downloaded,
+is over the size limit, or is not a supported image. Limits are
+`IMAGE_DOWNLOADER_MAX_FILE_MB` and `IMAGE_DOWNLOADER_DOWNLOAD_TIMEOUT_SECONDS`.
+
 ## Configuration
 
 Shared settings use `os.getenv` with the same environment keys as
@@ -168,6 +196,8 @@ variables.
 | `WEB_CONCURRENCY` | `1`; multiple workers supported with Redis |
 | `HISTORY_MAX_MESSAGES` | `20` recent messages sent to the model |
 | `MAX_OUTPUT_TOKENS` | `4096` |
+| `IMAGE_DOWNLOADER_MAX_FILE_MB` | `50` |
+| `IMAGE_DOWNLOADER_DOWNLOAD_TIMEOUT_SECONDS` | `60` |
 
 Set `redis-host` to save sessions and full chat history in Redis. Configure the
 connection with `redis-port`, `redis-db`, `redis-pass`, and `redis-ssl`; set
