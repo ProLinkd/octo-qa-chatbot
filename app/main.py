@@ -11,6 +11,7 @@ from openai import AsyncOpenAI
 from app.core.config import settings
 from app.core.sessions import build_session_store
 from app.rag.store import HandbookStore
+from app.routers.image_downloader import router as image_downloader_router
 from app.routers.qa import router
 
 
@@ -45,6 +46,7 @@ app = FastAPI(
     openapi_url="/openapi.json" if settings.DEBUG else None,
 )
 app.include_router(router)
+app.include_router(image_downloader_router)
 
 
 @app.get("/health-check")
