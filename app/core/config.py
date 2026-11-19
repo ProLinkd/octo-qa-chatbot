@@ -43,6 +43,8 @@ class Settings(BaseSettings):
     MAX_SESSIONS: int = Field(1000, gt=0)
     HISTORY_MAX_MESSAGES: int = Field(20, ge=2, le=100)
     MAX_OUTPUT_TOKENS: int = Field(4096, ge=256)
+    IMAGE_DOWNLOADER_MAX_FILE_MB: int = Field(50, gt=0)
+    IMAGE_DOWNLOADER_DOWNLOAD_TIMEOUT_SECONDS: int = Field(60, gt=0)
 
     @property
     def REDIS_ENABLED(self) -> bool:
