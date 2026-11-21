@@ -14,7 +14,7 @@ class Settings(BaseSettings):
 
     APP_NAME: str = "octo_qa_chatbot"
     VERSION: str = "1.1.0"
-    DEBUG: bool = True
+    DEBUG: bool = False
     STATIC_API_TOKEN: str = Field(default_factory=lambda: os.getenv("auth-token", ""))
     OPENAI_API_TOKEN: str = Field(default_factory=lambda: os.getenv("openai-api-token", ""))
     QA_OPENAI_MODEL: str = Field(
